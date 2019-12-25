@@ -25,10 +25,26 @@ public class SimpleProducer {
         // 声明（创建）队列
         channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
-        // 消息内容
-        String message = "I am simple_queue!";
-        channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
-        System.out.println(" SimpleProducer '" + message + "'");
+        // 不开启事务
+//        String message = "I am simple_queue!";
+//        channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+//        System.out.println(" SimpleProducer '" + message + "'");
+
+        // 开启事务
+        try {
+            String message = "I am simple_queue!";
+            // 开启事务
+            channel.txSelect();
+            // 往队列中发出一条消息，使用rabbitmq默认交换机
+            channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+            // 提交事务
+            channel.txCommit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 事务回滚
+            channel.txRollback();
+        }
+
 
         // 关闭通道和连接
         channel.close();
