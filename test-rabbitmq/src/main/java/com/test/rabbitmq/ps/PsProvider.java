@@ -31,6 +31,10 @@ public class PsProvider {
 		AMQP.BasicProperties.Builder builder = new AMQP.BasicProperties.Builder();
 		// 1:不持久化 2:持久化
 		builder.deliveryMode(2);
+		// 消息过期时间
+		builder.expiration("10000");
+		// 优先级,优先级高的先执行
+		builder.priority(5);
 		AMQP.BasicProperties properties = builder.build();
 		/*
 		 * EXCHANGE_NAME: 交换机名称
